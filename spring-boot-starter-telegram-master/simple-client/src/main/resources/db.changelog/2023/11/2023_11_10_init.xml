@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="2" author="44x44">
+        <!--<createTable tableName="client">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mos_ru_login" type="varchar(500)"/>
+            <column name="mos_ru_password" type="varchar(500)"/>
+            <column name="you_gile_login" type="varchar(500)"/>
+            <column name="you_gile_password" type="varchar(500)"/>
+            <column name="you_gile_token" type="varchar(500)"/>
+            <column name="inspector_board_name" type="varchar(500)"/>
+            <column name="citizens_board_name" type="varchar(500)"/>
+            <column name="company_id" type="varchar(500)"/>
+        </createTable>
+
+        <createTable tableName="card">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="you_gile_card_id" type="varchar(500)"/>
+        </createTable>-->
+    </changeSet>
+</databaseChangeLog>
