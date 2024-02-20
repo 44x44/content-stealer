@@ -3,6 +3,7 @@ package dev.voroby.springframework.telegram;
 import dev.voroby.springframework.telegram.client.TdApi;
 import dev.voroby.springframework.telegram.client.TelegramClient;
 import dev.voroby.springframework.telegram.client.updates.ClientAuthorizationState;
+import dev.voroby.springframework.telegram.utils.TdApiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -39,8 +41,8 @@ public class TelegramClientApplication {
                 /*wait for authorization*/
                 TimeUnit.MILLISECONDS.sleep(200);
             }
-            /*TdApi.LoadChats loadChatsQuery = new TdApi.LoadChats(new TdApi.ChatListMain(), 100);
-            telegramClient.sendWithCallback(loadChatsQuery, this::loadChatsHandler);*/
+            //TdApi.LoadChats loadChatsQuery = new TdApi.LoadChats(new TdApi.ChatListMain(), 100);
+            //telegramClient.sendWithCallback(loadChatsQuery, this::loadChatsHandler);
 
             //TdApi.ChatLists chatLists = telegramClient.sendSync(new TdApi.GetChatListsToAddChat(-1001792690419L), TdApi.ChatLists.class);
             //TdApi.Chat chat = telegramClient.sendSync(new TdApi.JoinChatByInviteLink("https://t.me/+oDf_lVJzbNQyYWFi"), TdApi.Chat.class);
@@ -50,81 +52,106 @@ public class TelegramClientApplication {
             //17208180736
             //17209229312
 
-            telegramClient.sendSync(new TdApi.GetChatHistory(-1001077837216L, 0, 0, 10, false), TdApi.Messages.class);
-            TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(-1001077837216L, 0, 0, 10, false), TdApi.Messages.class);
+            //telegramClient.sendSync(new TdApi.GetChatHistory(-1001077837216L, 0, 0, 10, false), TdApi.Messages.class);
+            //TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(-1001077837216L, 0, 0, 10, false), TdApi.Messages.class);
             /*telegramClient.sendSync(new TdApi.GetChatHistory(823105613L, 0, 0, 10, false), TdApi.Messages.class);
             TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(823105613L, 0, 0, 10, false), TdApi.Messages.class);*/
-            List<TdApi.InputMessageContent> albumMessagesContent = new ArrayList<>();
-            TdApi.InputMessageContent inputMessageContent;
-            long albumId = 0;
-            List<TdApi.Message> reversedMessages = Arrays.asList(messages.messages);
-            Collections.reverse(reversedMessages);
-            for (TdApi.Message message : reversedMessages) {
-                inputMessageContent = null;
-                if (message.content instanceof TdApi.MessageText messageText) {
-                    inputMessageContent = new TdApi.InputMessageText(
-                        messageText.text, false, true
-                    );
-                }
-                if (message.content instanceof TdApi.MessageVideo messageVideo) {
-                    inputMessageContent = new TdApi.InputMessageVideo(
-                        new TdApi.InputFileRemote(messageVideo.video.video.remote.id),
-                        new TdApi.InputThumbnail(
-                            new TdApi.InputFileRemote(messageVideo.video.thumbnail.file.remote.id),
-                            messageVideo.video.thumbnail.width,
-                            messageVideo.video.thumbnail.height
-                        ),
-                        null,
-                        messageVideo.video.duration,
-                        messageVideo.video.width,
-                        messageVideo.video.height,
-                        messageVideo.video.supportsStreaming,
-                        messageVideo.caption,
-                        null,
-                        messageVideo.hasSpoiler
-                    );
-                }
-                if (message.content instanceof TdApi.MessagePhoto messagePhoto) {
-                    inputMessageContent = new TdApi.InputMessagePhoto(
-                        new TdApi.InputFileRemote(messagePhoto.photo.sizes[0].photo.remote.id),
-                        null,
-                        null,
-                        messagePhoto.photo.sizes[0].width,
-                        messagePhoto.photo.sizes[0].height,
-                        messagePhoto.caption,
-                        null,
-                        messagePhoto.hasSpoiler
-                    );
-                }
-                /*if (inputMessageContent != null) {
-                    if (message.mediaAlbumId > 0 && (albumId == 0 || message.mediaAlbumId == albumId)) {
-                        albumMessagesContent.add(inputMessageContent);
-                        albumId = message.mediaAlbumId;
-                    } else {
-                        if (!albumMessagesContent.isEmpty()) {
-                            telegramClient.sendSync(
-                                new TdApi.SendMessageAlbum(
-                                    -1001792690419L, 0, null, null,
-                                    albumMessagesContent.toArray(new TdApi.InputMessageContent[0]),
-                                    false
-                                ),
-                                TdApi.Messages.class
-                            );
-                            albumMessagesContent.clear();
-                        }
-                        if (message.mediaAlbumId > 0) {
-                            albumMessagesContent.add(inputMessageContent);
-                        } else {
-                            telegramClient.sendSync(
-                                new TdApi.SendMessage(
-                                    -1001792690419L, 0, null, null, null,
-                                    inputMessageContent
-                                ),
-                                TdApi.Message.class
-                            );
-                        }
+            int yesterday = (int) (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
+            while (true) {
+                List<Long> channelIds = List.of(6322607912L);
+                Random random = new Random();
+                Long fromChannelId = channelIds.get(random.nextInt(channelIds.size()));
+                telegramClient.sendSync(new TdApi.GetChatHistory(fromChannelId, 0, 0, 10, false), TdApi.Messages.class);
+                TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(fromChannelId, 0, 0, 10, false), TdApi.Messages.class);
+                List<TdApi.InputMessageContent> albumMessagesContent = new ArrayList<>();
+                TdApi.InputMessageContent inputMessageContent;
+                long albumId = 0;
+                List<TdApi.Message> reversedMessages = Arrays.asList(messages.messages);
+                Collections.reverse(reversedMessages);
+                for (TdApi.Message message : reversedMessages) {
+                    if (message.date < yesterday || message.replyMarkup != null) {
+                        continue;
                     }
-                }*/
+                    inputMessageContent = null;
+                    if (message.content instanceof TdApi.MessageText messageText) {
+                        TdApi.FormattedText text = messageText.text;
+                        TdApiUtils.removeAllLinks(text);
+                        inputMessageContent = new TdApi.InputMessageText(
+                            text, false, true
+                        );
+                    }
+                    if (message.content instanceof TdApi.MessageVideo messageVideo) {
+                        TdApi.FormattedText caption = messageVideo.caption;
+                        TdApiUtils.removeAllLinks(caption);
+                        inputMessageContent = new TdApi.InputMessageVideo(
+                            new TdApi.InputFileRemote(messageVideo.video.video.remote.id),
+                            new TdApi.InputThumbnail(
+                                new TdApi.InputFileRemote(messageVideo.video.thumbnail.file.remote.id),
+                                messageVideo.video.thumbnail.width,
+                                messageVideo.video.thumbnail.height
+                            ),
+                            null,
+                            messageVideo.video.duration,
+                            messageVideo.video.width,
+                            messageVideo.video.height,
+                            messageVideo.video.supportsStreaming,
+                            caption,
+                            null,
+                            messageVideo.hasSpoiler
+                        );
+                    }
+                    if (message.content instanceof TdApi.MessagePhoto messagePhoto) {
+                        TdApi.FormattedText caption = messagePhoto.caption;
+                        TdApiUtils.removeAllLinks(caption);
+                        inputMessageContent = new TdApi.InputMessagePhoto(
+                            new TdApi.InputFileRemote(messagePhoto.photo.sizes[0].photo.remote.id),
+                            null,
+                            null,
+                            messagePhoto.photo.sizes[0].width,
+                            messagePhoto.photo.sizes[0].height,
+                            caption,
+                            null,
+                            messagePhoto.hasSpoiler
+                        );
+                    }
+                    if (inputMessageContent != null) {
+                        /*if (message.mediaAlbumId > 0 && (albumId == 0 || message.mediaAlbumId == albumId)) {
+                            albumMessagesContent.add(inputMessageContent);
+                            albumId = message.mediaAlbumId;
+                        } else {
+                            if (!albumMessagesContent.isEmpty()) {
+                                if (random.nextBoolean()) {
+                                    albumMessagesContent.clear();
+                                    continue;
+                                }
+                                telegramClient.sendSync(
+                                    new TdApi.SendMessageAlbum(
+                                        -1001792690419L, 0, null, null,
+                                        albumMessagesContent.toArray(new TdApi.InputMessageContent[0]),
+                                        false
+                                    ),
+                                    TdApi.Messages.class
+                                );
+                                return;
+                            }
+                            if (message.mediaAlbumId > 0) {
+                                albumMessagesContent.add(inputMessageContent);
+                            } else {
+                                if (random.nextBoolean()) {
+                                    continue;
+                                }
+                                telegramClient.sendSync(
+                                    new TdApi.SendMessage(
+                                        -1001792690419L, 0, null, null, null,
+                                        inputMessageContent
+                                    ),
+                                    TdApi.Message.class
+                                );
+                                return;
+                            }
+                        }*/
+                    }
+                }
             }
         };
     }

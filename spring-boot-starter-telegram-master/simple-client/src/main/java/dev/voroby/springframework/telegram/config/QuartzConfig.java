@@ -32,7 +32,7 @@ public class QuartzConfig {
     }
 
     @Bean
-    public JobDetailFactoryBean stealContentJob() {
+    public JobDetailFactoryBean stealContent() {
         return QuartzUtils.createJobDetail(
             StealContentJob.class,
             "steal random post and post it"
@@ -41,7 +41,7 @@ public class QuartzConfig {
 
     @Bean
     public CronTriggerFactoryBean transferTasksJobTriggerEveryMinute(
-        @Qualifier("stealContentJob")JobDetail jobDetail) {
+        @Qualifier("stealContent")JobDetail jobDetail) {
         return QuartzUtils.createCronTrigger(
             jobDetail, "0 0/1 * * * ?", "stealContentJob Trigger every minute"
         );

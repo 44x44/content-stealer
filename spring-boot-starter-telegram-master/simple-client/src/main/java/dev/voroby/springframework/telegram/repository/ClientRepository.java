@@ -15,7 +15,7 @@ public class ClientRepository {
     private JdbcTemplate jdbcTemplate;
     public static final RowMapper<ChannelPool> CHANNEL_POOL = BeanPropertyRowMapper.newInstance(ChannelPool.class);
 
-    public void insertChannelPool(ChannelPool pool) {
+    /*public void insertChannelPool(ChannelPool pool) {
         jdbcTemplate.update(
             """
             INSERT INTO channel_pool(
@@ -33,7 +33,7 @@ public class ClientRepository {
             pool.getChannelIds(),
             pool.getExpiredDate()
         );
-    }
+    }*/
 
     public List<ChannelPool> getAllActiveChannelPools(String stealTime) {
         return jdbcTemplate.query(

@@ -5,6 +5,7 @@ import dev.voroby.springframework.telegram.client.TelegramClient;
 import dev.voroby.springframework.telegram.model.ChannelPool;
 import dev.voroby.springframework.telegram.repository.ClientRepository;
 import dev.voroby.springframework.telegram.tms.SchedulerJob;
+import dev.voroby.springframework.telegram.utils.TdApiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,9 +37,9 @@ public class StealContentJob extends SchedulerJob {
     }
 
     private void stealPost(ChannelPool pool) {
-        int yesterday = (int) (System.currentTimeMillis() / 1000L - TimeUnit.DAYS.toMillis(1));
+        int yesterday = (int) (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
         while (true) {
-            List<Long> channelIds = pool.getChannelIdsList();
+            List<Long> channelIds = pool.getChannelIds();
             Random random = new Random();
             Long fromChannelId = channelIds.get(random.nextInt(channelIds.size()));
             telegramClient.sendSync(new TdApi.GetChatHistory(fromChannelId, 0, 0, 10, false), TdApi.Messages.class);
@@ -49,16 +50,21 @@ public class StealContentJob extends SchedulerJob {
             List<TdApi.Message> reversedMessages = Arrays.asList(messages.messages);
             Collections.reverse(reversedMessages);
             for (TdApi.Message message : reversedMessages) {
-                if (message.date < yesterday) {
+                if (message.date < yesterday || message.replyMarkup != null) {
                     continue;
                 }
                 inputMessageContent = null;
                 if (message.content instanceof TdApi.MessageText messageText) {
+                    TdApi.FormattedText text = messageText.text;
+                    TdApiUtils.removeAllLinks(text);
+                    TdApiUtils.addLink(text, pool.getUrlTitle(), pool.getUrlChannel());
                     inputMessageContent = new TdApi.InputMessageText(
-                        messageText.text, false, true
+                        text, false, true
                     );
                 }
                 if (message.content instanceof TdApi.MessageVideo messageVideo) {
+                    TdApi.FormattedText caption = messageVideo.caption;
+                    TdApiUtils.removeAllLinks(caption);
                     inputMessageContent = new TdApi.InputMessageVideo(
                         new TdApi.InputFileRemote(messageVideo.video.video.remote.id),
                         new TdApi.InputThumbnail(
@@ -71,19 +77,22 @@ public class StealContentJob extends SchedulerJob {
                         messageVideo.video.width,
                         messageVideo.video.height,
                         messageVideo.video.supportsStreaming,
-                        messageVideo.caption,
+                        caption,
                         null,
                         messageVideo.hasSpoiler
                     );
                 }
                 if (message.content instanceof TdApi.MessagePhoto messagePhoto) {
+                    TdApi.FormattedText caption = messagePhoto.caption;
+                    TdApiUtils.removeAllLinks(caption);
+                    TdApiUtils.addLink(caption, pool.getUrlTitle(), pool.getUrlChannel());
                     inputMessageContent = new TdApi.InputMessagePhoto(
                         new TdApi.InputFileRemote(messagePhoto.photo.sizes[0].photo.remote.id),
                         null,
                         null,
                         messagePhoto.photo.sizes[0].width,
                         messagePhoto.photo.sizes[0].height,
-                        messagePhoto.caption,
+                        caption,
                         null,
                         messagePhoto.hasSpoiler
                     );
@@ -100,7 +109,7 @@ public class StealContentJob extends SchedulerJob {
                             }
                             telegramClient.sendSync(
                                 new TdApi.SendMessageAlbum(
-                                    pool.getClientChannelId(), 0, null, null,
+                                    pool.getTgClientChannelId(), 0, null, null,
                                     albumMessagesContent.toArray(new TdApi.InputMessageContent[0]),
                                     false
                                 ),
@@ -116,7 +125,7 @@ public class StealContentJob extends SchedulerJob {
                             }
                             telegramClient.sendSync(
                                 new TdApi.SendMessage(
-                                    pool.getClientChannelId(), 0, null, null, null,
+                                    pool.getTgClientChannelId(), 0, null, null, null,
                                     inputMessageContent
                                 ),
                                 TdApi.Message.class

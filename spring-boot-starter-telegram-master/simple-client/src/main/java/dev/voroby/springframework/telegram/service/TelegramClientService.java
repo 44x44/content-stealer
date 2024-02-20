@@ -31,7 +31,7 @@ public class TelegramClientService {
         messages.addLast(msg);
     }
 
-    public void addChannelPool(AddChannelPoolRequest request) {
+    /*public void addChannelPool(AddChannelPoolRequest request) {
         for (String inviteLink : request.getInviteLinks()) {
             tryJoinChat(inviteLink);
         }
@@ -42,7 +42,7 @@ public class TelegramClientService {
             .setClientChannelId(channelIds.remove(channelIds.size() - 1))
             .setChannelIdsList(channelIds);
         clientRepository.insertChannelPool(pool);
-    }
+    }*/
 
     @SneakyThrows
     public void tryJoinChat(String inviteLink) {

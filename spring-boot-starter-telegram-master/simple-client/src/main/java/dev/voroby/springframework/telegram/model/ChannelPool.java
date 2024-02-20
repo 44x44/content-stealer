@@ -14,19 +14,23 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class ChannelPool {
-    private Long clientId;
+    private Long channelId;
+    private Long tgClientChannelId;
+    private Long tgClientId;
     private String schedule;
-    private Long clientChannelId;
-    private List<Long> channelIdsList;
+    private String clientChannelName;
+    private List<Long> channelIds;
     private Date expiredDate;
+    private String urlTitle;
+    private String urlChannel;
 
-    public void setChannelIds(String channelIds) {
-        this.channelIdsList = Arrays.stream(channelIds.split(";"))
+    public void setChannelIdsList(String channelIds) {
+        this.channelIds = Arrays.stream(channelIds.split(";"))
             .map(Long::parseLong)
             .collect(Collectors.toList());
     }
 
-    public String getChannelIds() {
-        return Joiner.on(";").join(channelIdsList);
+    public String getChannelIdsList() {
+        return Joiner.on(";").join(channelIds);
     }
 }
