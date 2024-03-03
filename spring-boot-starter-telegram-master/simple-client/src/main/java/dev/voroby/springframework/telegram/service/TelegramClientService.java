@@ -2,8 +2,6 @@ package dev.voroby.springframework.telegram.service;
 
 import dev.voroby.springframework.telegram.client.TdApi;
 import dev.voroby.springframework.telegram.client.TelegramClient;
-import dev.voroby.springframework.telegram.model.AddChannelPoolRequest;
-import dev.voroby.springframework.telegram.model.ChannelPool;
 import dev.voroby.springframework.telegram.repository.ClientRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +45,11 @@ public class TelegramClientService {
     @SneakyThrows
     public void tryJoinChat(String inviteLink) {
         telegramClient.sendSync(new TdApi.JoinChatByInviteLink(inviteLink), TdApi.Chat.class);
+    }
+
+    @SneakyThrows
+    public void tryJoinChat(Long chatId) {
+        telegramClient.sendSync(new TdApi.JoinChat(chatId), TdApi.Chat.class);
     }
 
     private List<Long> getLastChannelPoolIds() {

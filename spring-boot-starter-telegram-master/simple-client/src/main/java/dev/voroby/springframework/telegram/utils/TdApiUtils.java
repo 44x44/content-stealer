@@ -1,10 +1,8 @@
 package dev.voroby.springframework.telegram.utils;
 
 import dev.voroby.springframework.telegram.client.TdApi;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.Objects;
 
 public class TdApiUtils {
     public static void removeAllLinks(TdApi.FormattedText text) {

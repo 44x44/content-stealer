@@ -1,4 +1,4 @@
-package dev.voroby.springframework.telegram.model;
+package dev.voroby.springframework.telegram.model.request;
 
 import lombok.Data;
 

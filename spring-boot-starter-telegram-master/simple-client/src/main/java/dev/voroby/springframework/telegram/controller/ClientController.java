@@ -1,6 +1,6 @@
 package dev.voroby.springframework.telegram.controller;
 
-import dev.voroby.springframework.telegram.model.AddChannelPoolRequest;
+import dev.voroby.springframework.telegram.model.request.AddChannelPoolRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
