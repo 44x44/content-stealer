@@ -1,5 +1,7 @@
 package dev.voroby.springframework.telegram.client;
 
+import dev.voroby.springframework.telegram.client.interfaces.HasText;
+
 /**
  * This class contains as static nested classes all other TDLib interface
  * type-classes and function-classes.
@@ -26337,7 +26339,7 @@ public class TdApi {
     /**
      * A text message.
      */
-    public static class MessageText extends MessageContent {
+    public static class MessageText extends MessageContent implements HasText {
         /**
          * Text of the message.
          */
@@ -26375,6 +26377,16 @@ public class TdApi {
         @Override
         public int getConstructor() {
             return CONSTRUCTOR;
+        }
+
+        @Override
+        public FormattedText getText() {
+            return this.text;
+        }
+
+        @Override
+        public void setText(FormattedText text) {
+            this.text = text;
         }
     }
 
@@ -26437,7 +26449,7 @@ public class TdApi {
     /**
      * An audio message.
      */
-    public static class MessageAudio extends MessageContent {
+    public static class MessageAudio extends MessageContent implements HasText {
         /**
          * The audio description.
          */
@@ -26476,12 +26488,22 @@ public class TdApi {
         public int getConstructor() {
             return CONSTRUCTOR;
         }
+
+        @Override
+        public FormattedText getText() {
+            return caption;
+        }
+
+        @Override
+        public void setText(FormattedText text) {
+            this.caption = text;
+        }
     }
 
     /**
      * A document message (general file).
      */
-    public static class MessageDocument extends MessageContent {
+    public static class MessageDocument extends MessageContent implements HasText {
         /**
          * The document description.
          */
@@ -26520,12 +26542,22 @@ public class TdApi {
         public int getConstructor() {
             return CONSTRUCTOR;
         }
+
+        @Override
+        public FormattedText getText() {
+            return caption;
+        }
+
+        @Override
+        public void setText(FormattedText text) {
+            this.caption = text;
+        }
     }
 
     /**
      * A photo message.
      */
-    public static class MessagePhoto extends MessageContent {
+    public static class MessagePhoto extends MessageContent implements HasText {
         /**
          * The photo.
          */
@@ -26575,6 +26607,16 @@ public class TdApi {
         @Override
         public int getConstructor() {
             return CONSTRUCTOR;
+        }
+
+        @Override
+        public FormattedText getText() {
+            return this.caption;
+        }
+
+        @Override
+        public void setText(FormattedText text) {
+            this.caption = text;
         }
     }
 
@@ -26650,7 +26692,7 @@ public class TdApi {
     /**
      * A video message.
      */
-    public static class MessageVideo extends MessageContent {
+    public static class MessageVideo extends MessageContent implements HasText {
         /**
          * The video description.
          */
@@ -26700,6 +26742,16 @@ public class TdApi {
         @Override
         public int getConstructor() {
             return CONSTRUCTOR;
+        }
+
+        @Override
+        public FormattedText getText() {
+            return this.caption;
+        }
+
+        @Override
+        public void setText(FormattedText text) {
+            this.caption = text;
         }
     }
 

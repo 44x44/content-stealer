@@ -23,6 +23,8 @@ public class ChannelPool {
     private Date expiredDate;
     private String urlTitle;
     private String urlChannel;
+    private List<String> lastMessagesParentIds;
+    private List<String> lastAlbumsParentIds;
 
     public void setChannelIdsList(String channelIds) {
         this.channelIds = Arrays.stream(channelIds.split(";"))
@@ -31,6 +33,40 @@ public class ChannelPool {
     }
 
     public String getChannelIdsList() {
-        return Joiner.on(";").join(channelIds);
+        return Joiner.on(";").join(this.channelIds);
+    }
+
+    public void setLastMessagesParentIdsList(String channelIds) {
+        this.lastMessagesParentIds = Arrays.stream(channelIds.split(";"))
+            .collect(Collectors.toList());
+    }
+
+    public String getLastMessagesParentIdsList() {
+        if (this.lastMessagesParentIds == null) return "";
+        int size = this.lastMessagesParentIds.size();
+        if (size > 200) this.lastMessagesParentIds = this.lastMessagesParentIds.subList(size - 201, size - 1);
+        return Joiner.on(";").join(this.lastMessagesParentIds);
+    }
+
+    public boolean isMessageAlreadyPosted(MessageIds messageIds) {
+        return this.lastMessagesParentIds != null &&
+            this.lastMessagesParentIds.stream().anyMatch(id -> messageIds.getIds().contains(id));
+    }
+
+    public void setLastAlbumsParentIdsList(String channelIds) {
+        this.lastAlbumsParentIds = Arrays.stream(channelIds.split(";"))
+            .collect(Collectors.toList());
+    }
+
+    public String getLastAlbumsParentIdsList() {
+        if (this.lastAlbumsParentIds == null) return "";
+        int size = this.lastAlbumsParentIds.size();
+        if (size > 200) this.lastAlbumsParentIds = this.lastAlbumsParentIds.subList(size - 201, size - 1);
+        return Joiner.on(";").join(this.lastAlbumsParentIds);
+    }
+
+    public boolean isAlbumAlreadyPosted(AlbumIds albumIds) {
+        return this.lastAlbumsParentIds != null &&
+            this.lastAlbumsParentIds.stream().anyMatch(id -> albumIds.getIds().contains(id));
     }
 }

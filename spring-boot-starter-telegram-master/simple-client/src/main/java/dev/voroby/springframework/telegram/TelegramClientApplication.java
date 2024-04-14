@@ -41,11 +41,14 @@ public class TelegramClientApplication {
                 /*wait for authorization*/
                 TimeUnit.MILLISECONDS.sleep(200);
             }
-            //TdApi.LoadChats loadChatsQuery = new TdApi.LoadChats(new TdApi.ChatListMain(), 100);
-            //telegramClient.sendWithCallback(loadChatsQuery, this::loadChatsHandler);
+            TdApi.LoadChats loadChatsQuery = new TdApi.LoadChats(new TdApi.ChatListMain(), 100);
+            telegramClient.sendWithCallback(loadChatsQuery, this::loadChatsHandler);
+
+            // все, что дальше в этом методе, использовалось исключительно для быстрого теста
 
             //TdApi.ChatLists chatLists = telegramClient.sendSync(new TdApi.GetChatListsToAddChat(-1001792690419L), TdApi.ChatLists.class);
             //TdApi.Chat chat = telegramClient.sendSync(new TdApi.JoinChatByInviteLink("https://t.me/+oDf_lVJzbNQyYWFi"), TdApi.Chat.class);
+            //var chats = telegramClient.sendSync(new TdApi.GetChats(new TdApi.ChatListMain(), 100));
             //TdApi.ChatFolder folder = telegramClient.sendSync(new TdApi.GetChatFolder(5), TdApi.ChatFolder.class);
             //TdApi.Ok resp = telegramClient.sendSync(new TdApi.JoinChat(-1001633241826L), TdApi.Ok.class);
             //17207132160
@@ -56,8 +59,8 @@ public class TelegramClientApplication {
             //TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(-1001077837216L, 0, 0, 10, false), TdApi.Messages.class);
             /*telegramClient.sendSync(new TdApi.GetChatHistory(823105613L, 0, 0, 10, false), TdApi.Messages.class);
             TdApi.Messages messages = telegramClient.sendSync(new TdApi.GetChatHistory(823105613L, 0, 0, 10, false), TdApi.Messages.class);*/
-            int yesterday = (int) (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
-            while (true) {
+            //int yesterday = (int) (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
+            while (new Object().equals(null)) {
                 List<Long> channelIds = List.of(6322607912L);
                 Random random = new Random();
                 Long fromChannelId = channelIds.get(random.nextInt(channelIds.size()));
@@ -69,9 +72,9 @@ public class TelegramClientApplication {
                 List<TdApi.Message> reversedMessages = Arrays.asList(messages.messages);
                 Collections.reverse(reversedMessages);
                 for (TdApi.Message message : reversedMessages) {
-                    if (message.date < yesterday || message.replyMarkup != null) {
-                        continue;
-                    }
+                    //if (message.date < yesterday || message.replyMarkup != null) {
+                    //    continue;
+                    //}
                     inputMessageContent = null;
                     if (message.content instanceof TdApi.MessageText messageText) {
                         TdApi.FormattedText text = messageText.text;
