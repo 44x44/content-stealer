@@ -4,26 +4,56 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="2" author="44x44">
+
+    <changeSet id="message_ids" author="44x44">
         <validCheckSum>any</validCheckSum>
-        <addColumn tableName="channel_pool">
-            <column name="last_messages_parent_ids_list" type="text"/>
-        </addColumn>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="message_ids"/>
+            </not>
+        </preConditions>
         <createTable tableName="message_ids">
             <column name="ids" type="text">
-                <constraints primaryKey="true" nullable="false"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="channel_pool-add_message_ids" author="44x44">
+        <validCheckSum>any</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="channel_pool" columnName="last_messages_parent_ids_list"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="channel_pool">
+            <column name="last_messages_parent_ids_list" type="text"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="album_ids" author="44x44">
+        <validCheckSum>any</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="album_ids"/>
+            </not>
+        </preConditions>
+        <createTable tableName="album_ids">
+            <column name="ids" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="channel_pool-add_album_ids" author="44x44">
         <validCheckSum>any</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="channel_pool" columnName="last_albums_parent_ids_list"/>
+            </not>
+        </preConditions>
         <addColumn tableName="channel_pool">
             <column name="last_albums_parent_ids_list" type="text"/>
         </addColumn>
-        <createTable tableName="message_ids">
-            <column name="ids" type="text">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
     </changeSet>
 </databaseChangeLog>
