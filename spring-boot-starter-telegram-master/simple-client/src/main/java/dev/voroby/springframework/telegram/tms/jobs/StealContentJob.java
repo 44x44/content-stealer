@@ -212,7 +212,8 @@ public class StealContentJob extends SchedulerJob {
         }
         almightyRepository.updateLastAlbumsParentIds(
             pool.getChannelId(),
-            pool.getLastAlbumsParentIdsList() + ";" + stealingAlbumId
+            Objects.equals(pool.getLastAlbumsParentIdsList(), "") ? stealingAlbumId :
+                pool.getLastAlbumsParentIdsList() + ";" + stealingAlbumId
         );
 
         return true;
@@ -252,7 +253,8 @@ public class StealContentJob extends SchedulerJob {
         }
         almightyRepository.updateLastMessagesParentIds(
             pool.getChannelId(),
-            pool.getLastMessagesParentIdsList() + ";" + stealingMessageId
+            Objects.equals(pool.getLastMessagesParentIdsList(), "") ? stealingMessageId :
+                pool.getLastMessagesParentIdsList() + ";" + stealingMessageId
         );
 
         return true;

@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -27,6 +28,7 @@ public class ChannelPool {
     private List<String> lastAlbumsParentIds;
 
     public void setChannelIdsList(String channelIds) {
+        if (StringUtils.isEmpty(channelIds)) return;
         this.channelIds = Arrays.stream(channelIds.split(";"))
             .map(Long::parseLong)
             .collect(Collectors.toList());
@@ -36,8 +38,9 @@ public class ChannelPool {
         return Joiner.on(";").join(this.channelIds);
     }
 
-    public void setLastMessagesParentIdsList(String channelIds) {
-        this.lastMessagesParentIds = Arrays.stream(channelIds.split(";"))
+    public void setLastMessagesParentIdsList(String messageIds) {
+        if (StringUtils.isEmpty(messageIds)) return;
+        this.lastMessagesParentIds = Arrays.stream(messageIds.split(";"))
             .collect(Collectors.toList());
     }
 
@@ -53,8 +56,9 @@ public class ChannelPool {
             this.lastMessagesParentIds.stream().anyMatch(id -> messageIds.getIds().contains(id));
     }
 
-    public void setLastAlbumsParentIdsList(String channelIds) {
-        this.lastAlbumsParentIds = Arrays.stream(channelIds.split(";"))
+    public void setLastAlbumsParentIdsList(String albumIds) {
+        if (StringUtils.isEmpty(albumIds)) return;
+        this.lastAlbumsParentIds = Arrays.stream(albumIds.split(";"))
             .collect(Collectors.toList());
     }
 

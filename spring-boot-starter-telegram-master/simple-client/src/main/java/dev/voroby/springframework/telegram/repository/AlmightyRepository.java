@@ -41,7 +41,7 @@ public class AlmightyRepository {
 
     public List<ChannelPool> getAllActiveChannelPools(String stealTime) {
         return jdbcTemplate.query(
-            "SELECT * FROM channel_pool WHERE schedule LIKE ?",
+            "SELECT * FROM channel_pool WHERE schedule LIKE ? AND expired_date > now()",
             CHANNEL_POOL,
             "%" + stealTime + "%"
         );
@@ -55,11 +55,11 @@ public class AlmightyRepository {
     }
 
     public MessageIds findContainingMessageId(String messageId) {
-        return jdbcTemplate.queryForObject(
+        return jdbcTemplate.query(
             "SELECT * FROM message_ids WHERE ids LIKE ?",
             MESSAGE_IDS,
             "%" + messageId + "%"
-        );
+        ).stream().findFirst().orElse(null);
     }
 
     public void updateMessageIds(String oldValue, String newValue) {
@@ -84,11 +84,11 @@ public class AlmightyRepository {
     }
 
     public AlbumIds findContainingAlbumId(String albumId) {
-        return jdbcTemplate.queryForObject(
+        return jdbcTemplate.query(
             "SELECT * FROM album_ids WHERE ids LIKE ?",
             ALBUM_IDS,
             "%" + albumId + "%"
-        );
+        ).stream().findFirst().orElse(null);
     }
 
     public void updateAlbumIds(String oldValue, String newValue) {
